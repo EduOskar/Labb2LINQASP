@@ -80,6 +80,7 @@ namespace Labb2LINQ.Controllers
         // GET: Students/Create
         public IActionResult Create()
         {
+            ViewData["teacher"] = new SelectList(_context.Teacher, "TeacherId", "TeacherId");
             return View();
         }
 
@@ -88,17 +89,13 @@ namespace Labb2LINQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentId,FirstName,LastName,EnrollmentDate, FK_teacher")] Student student)
+        public async Task<IActionResult> Create([Bind("StudentId,FirstName,LastName,EnrollmentDate, teacher")] Student student)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (student.FK_teacher == null)
-                    {
-                        student.FK_teacher = 3;
-                    }
-                   
+                    
                     _context.Add(student);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -111,7 +108,8 @@ namespace Labb2LINQ.Controllers
             "see your system administrator.");
             }
 
-         
+            ViewData["teacher"] = new SelectList(_context.Teacher, "TeacherId", "TeacherId", student.teacher.FirstName);
+            ViewData["teacher"] = new SelectList(_context.Teacher, "TeacherId", "TeacherId", student.teacher.LastName);
             return View(student);
         }
 
