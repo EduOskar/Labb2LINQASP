@@ -25,12 +25,14 @@ namespace Labb2LINQ.Controllers
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
             ViewData["CurrentFilter"] = searchString;
-            var students = from s in _context.Student
+            var students = from s in _context.Student.Include(t=>t.teacher)
                            select s;
             if (!string.IsNullOrEmpty(searchString))
             {
                 students = students.Where(s => s.LastName.Contains(searchString)
-                                        || s.FirstName.Contains(searchString));
+                                        || s.FirstName.Contains(searchString)
+                                        || s.teacher.FirstName.Contains(searchString)
+                                        || s.teacher.LastName.Contains(searchString));
             }
             switch (sortOrder)
             {
