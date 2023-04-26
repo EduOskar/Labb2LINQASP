@@ -88,12 +88,17 @@ namespace Labb2LINQ.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentId,FirstName,LastName,EnrollmentDate")] Student student)
+        public async Task<IActionResult> Create([Bind("StudentId,FirstName,LastName,EnrollmentDate, FK_teacher")] Student student)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    if (student.FK_teacher == null)
+                    {
+                        student.FK_teacher = 3;
+                    }
+                   
                     _context.Add(student);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
